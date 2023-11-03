@@ -58,6 +58,8 @@ public class XPSParserTest extends TikaTest {
     @Test
     public void testVarious() throws Exception {
         List<Metadata> metadataList = getRecursiveMetadata("testXPS_various.xps");
+        metadataList.sort((m1, m2) -> m1.get(Metadata.CONTENT_TYPE)
+                .compareTo(m2.get(Metadata.CONTENT_TYPE)));
         //confirm embedded images and thumbnails were extracted
         assertEquals(4, metadataList.size());
 
@@ -83,17 +85,17 @@ public class XPSParserTest extends TikaTest {
         assertEquals("2017-12-12T11:15:38Z", metadata.get(TikaCoreProperties.MODIFIED));
 
 
-        assertEquals("image/png", metadataList.get(1).get(Metadata.CONTENT_TYPE));
-
-        Metadata inlineJpeg = metadataList.get(2);
+        Metadata inlineJpeg = metadataList.get(1);
         assertEquals("image/jpeg", inlineJpeg.get(Metadata.CONTENT_TYPE));
         assertContains("INetCache", inlineJpeg.get(TikaCoreProperties.ORIGINAL_RESOURCE_NAME));
         assertEquals(TikaCoreProperties.EmbeddedResourceType.INLINE.toString(),
                 inlineJpeg.get(TikaCoreProperties.EMBEDDED_RESOURCE_TYPE));
 
-        assertEquals("image/jpeg", metadataList.get(3).get(Metadata.CONTENT_TYPE));
+        assertEquals("image/jpeg", metadataList.get(2).get(Metadata.CONTENT_TYPE));
 //        assertEquals(TikaCoreProperties.EmbeddedResourceType.THUMBNAIL.toString(),
         //              inlineJpeg.get(TikaCoreProperties.EMBEDDED_RESOURCE_TYPE));
+
+        assertEquals("image/png", metadataList.get(3).get(Metadata.CONTENT_TYPE));
 
 
     }
